@@ -1,0 +1,220 @@
+from typing import List, Optional
+import pickle
+from datetime import datetime
+from fastapi import HTTPException, status
+from ..core.config import get_settings
+from .vector_store import VectorStoreService
+from .auth import AuthService
+from .ai_service import AIService
+
+settings = get_settings()
+
+class ChatService:
+    def __init__(self):
+        self.vector_store = VectorStoreService()
+        self.auth_service = AuthService()
+        self.ai_service = AIService()
+    
+    def _get_collection_name(self, bot_id: str) -> str:
+        """Generate collection name for a bot"""
+        return f"bot_{bot_id}"
+    
+    async def verify_bot_access(self, bot_id: str, user_id: str) -> dict:
+        """Verify user has access to the bot"""
+        from ..log_config import logger
+        try:
+            logger.info(f"Verifying access for bot {bot_id} and user {user_id}")
+            
+            # Get all user's bots first
+            bots = await self.auth_service.get_user_bots(user_id)
+            logger.info(f"Found {len(bots)} bots for user. Bot IDs: {[b.get('id', 'N/A') for b in bots]}")
+            
+            # We need to look for bot_id in the 'id' field since we mapped it in get_user_bots
+            matching_bot = next((bot for bot in bots if bot.get('id') == bot_id), None)
+            
+            if not matching_bot:
+                logger.error(f"Bot {bot_id} not found in user's bots. Available bots: {bots}")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Bot not found or access denied"
+                )
+                
+            logger.info(f"Access verified for bot {bot_id}. Bot details: {matching_bot}")
+            return matching_bot
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            logger.error(f"Error during bot access verification: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error verifying bot access: {str(e)}"
+            )
+
+    async def get_bot_documents(self, bot_id: str, user_id: str) -> dict:
+        """Get all documents associated with a bot from the vector store"""
+        from ..log_config import logger
+        try:
+            # Verify bot access
+            await self.verify_bot_access(bot_id, user_id)
+            
+            # Get the collection name for this bot
+            collection_name = self._get_collection_name(bot_id)
+            logger.info(f"Looking for documents in collection: {collection_name}")
+            
+            # Load metadata from vector store
+            meta_path = self.vector_store._get_metadata_path(collection_name)
+            logger.info(f"Checking metadata file at: {meta_path}")
+            
+            if not meta_path.exists():
+                logger.info(f"No metadata file found for bot {bot_id}")
+                return {"documents": []}
+                
+            try:
+                with open(meta_path, 'rb') as f:
+                    stored_data = pickle.load(f)
+                    
+                if not isinstance(stored_data, dict) or "texts" not in stored_data or "metadata" not in stored_data:
+                    logger.error(f"Invalid metadata format for bot {bot_id}")
+                    return {"documents": []}
+                    
+                # Return document metadata and texts
+                documents = []
+                for i, (text, metadata) in enumerate(zip(stored_data["texts"], stored_data["metadata"])):
+                    try:
+                        # Extract filename from metadata if available, or use a default
+                        filename = metadata.get("filename", f"document_{i}.txt")
+                        
+                        doc = {
+                            "id": str(i),  # Convert to string to match frontend interface
+                            "bot_id": bot_id,
+                            "filename": filename,
+                            "file_size": len(text.encode('utf-8')),  # Use text length as file size
+                            "created_at": metadata.get("created_at", datetime.now().isoformat()),
+                            "text": text[:100] + "..." if text else "",  # Include preview of text
+                        }
+                        
+                        # Add any additional metadata except what we've already used
+                        for key, value in metadata.items():
+                            if key not in ["filename", "created_at"]:
+                                doc[key] = value
+                                
+                        documents.append(doc)
+                    except Exception as e:
+                        logger.error(f"Error processing document {i} for bot {bot_id}: {str(e)}")
+                        continue
+                
+                logger.info(f"Successfully retrieved {len(documents)} documents for bot {bot_id}")
+                return {"documents": documents}
+                
+            except (pickle.UnpicklingError, EOFError) as e:
+                logger.error(f"Error reading metadata file for bot {bot_id}: {str(e)}")
+                return {"documents": []}
+                
+        except Exception as e:
+            logger.error(f"Error in get_bot_documents: {str(e)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error retrieving documents: {str(e)}"
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error retrieving bot documents: {str(e)}"
+            )
+    
+    async def get_response(self, bot_id: str, user_id: str, query: str) -> str:
+        """Get response from Gemini based on context from vector store"""
+        try:
+            # Verify bot access
+            bot = await self.verify_bot_access(bot_id, user_id)
+            collection_name = self._get_collection_name(bot_id)
+            
+            try:
+                # Get relevant context from vector store
+                results = self.vector_store.search(collection_name, query, limit=3)
+                
+                if not results:
+                    return "I don't have any relevant information to answer your question."
+            except ValueError as e:
+                # Specifically handle the case where no documents exist
+                return "I don't have any documents to search through. Please upload some documents first so I can assist you better."
+            except Exception as e:
+                from ..log_config import logger
+                logger.error(f"Error searching vector store: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Error searching through documents"
+                )
+            
+            # Extract and format context chunks with relevance scores
+            context_chunks = []
+            for result in results:
+                if result["score"] > 0.3:  # Relevance threshold
+                    context_chunks.append(result["text"])
+            
+            if not context_chunks:
+                return "I found some related information, but it wasn't relevant enough to provide a good answer."
+            
+            # Format context and create prompt
+            context = "\n\n".join(f"- {chunk}" for chunk in context_chunks)
+            prompt = f"""Based on the following excerpts from a document, please answer the user's question.
+            You are {bot['name']}, a helpful AI assistant.
+            Only use information from the provided context.
+            If the context doesn't contain relevant information, say so.
+            Keep your response concise and focused on the question.
+            
+            Context:
+            {context}
+            
+            User Question: {query}"""
+            
+            try:
+                # Get response from AI service
+                response_text = await self.ai_service.generate_response(prompt)
+                if not response_text:
+                    return "I apologize, but I'm having trouble generating a response right now. Please try again."
+                return response_text
+            except Exception as e:
+                return "I apologize, but I'm having trouble generating a response at the moment. Please try again later."
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error generating response: {str(e)}"
+            )
+    
+    async def process_documents(self, bot_id: str, user_id: str, texts: List[str], metadata: List[dict] = None):
+        """Process and store document chunks in vector store"""
+        from ..log_config import logger
+        try:
+            # Verify bot access
+            await self.verify_bot_access(bot_id, user_id)
+            collection_name = self._get_collection_name(bot_id)
+            
+            logger.info(f"Processing documents for bot {bot_id} in collection {collection_name}")
+            
+            # Create collection if it doesn't exist
+            try:
+                self.vector_store.create_collection(collection_name)
+                logger.info(f"Created new collection {collection_name}")
+            except Exception as e:
+                logger.warning(f"Collection creation warning for {collection_name}: {str(e)}")
+                
+            # Store chunks in vector store
+            if not texts:
+                logger.warning(f"No text chunks to process for bot {bot_id}")
+                return
+            
+            if metadata is None:
+                metadata = [{"created_at": datetime.utcnow().isoformat()} for _ in texts]
+                
+            logger.info(f"Adding {len(texts)} text chunks to collection {collection_name}")
+            self.vector_store.add_texts(collection_name, texts, metadata)
+            logger.info(f"Successfully processed documents for bot {bot_id}")
+            
+        except Exception as e:
+            logger.error(f"Error processing documents for bot {bot_id}: {str(e)}")
+            raise

@@ -1,0 +1,31 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="project-bolt",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "fastapi>=0.95.0",
+        "uvicorn>=0.21.0",
+        "python-dotenv>=1.0.0",
+        "pydantic>=2.0.0",
+        "langchain>=0.0.200",
+        "google-generativeai>=0.2.0",
+        "numpy>=1.24.0",
+        "torch>=2.0.0",
+        "transformers==4.30.2",
+        "sentence-transformers==2.2.2",
+        "huggingface-hub==0.16.4",
+        "faiss-cpu>=1.7.4",
+        "python-multipart>=0.0.6",
+        "supabase==2.0.3",
+        "python-jose[cryptography]==3.3.0",
+        "passlib[bcrypt]==1.7.4",
+        "python-slugify>=8.0.1",
+        "python-docx>=0.8.11",
+        "pypdf2>=3.0.0",
+        "chardet>=5.1.0",
+        "scikit-learn>=1.2.2",
+    ],
+    python_requires=">=3.10",
+)
