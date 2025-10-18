@@ -36,7 +36,10 @@ class VectorStoreService:
         # Try loading the model with retries
         max_retries = 3
         retry_delay = 5  # seconds
-        model_name = 'all-MiniLM-L6-v2'
+        # TEMPORARY: Using smaller model for Render free tier (512MB RAM limit)
+        # TO REVERT: Change back to 'all-MiniLM-L6-v2' when upgrading to paid plan
+        model_name = 'paraphrase-MiniLM-L3-v2'  # 61MB instead of 90MB
+        # ORIGINAL: model_name = 'all-MiniLM-L6-v2'
         
         for attempt in range(max_retries):
             try:
