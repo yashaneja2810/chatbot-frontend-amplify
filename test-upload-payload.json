@@ -1,0 +1,9 @@
+{
+  "httpMethod": "POST",
+  "path": "/api/upload",
+  "headers": {
+    "Authorization": "Bearer test-token",
+    "Content-Type": "application/json"
+  },
+  "body": "{\"company_name\":\"Test Company\",\"files\":[{\"filename\":\"test.txt\",\"content\":\"VGVzdCBjb250ZW50\",\"content_type\":\"text/plain\"}]}"
+}

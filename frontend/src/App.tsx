@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navigation } from './components/Navigation';
 import { Login } from './pages/Login';
+import { SignUp } from './pages/SignUp';
 import { CreateBot } from './pages/CreateBot';
 import { BotsList } from './pages/BotsList';
 import Dashboard from './pages/Dashboard';
@@ -23,14 +24,15 @@ const AppRoutes = () => {
   const location = useLocation();
 
   // Define which routes should show navigation
-  const showNav = isAuthenticated && location.pathname !== '/login';
+  const showNav = isAuthenticated && location.pathname !== '/login' && location.pathname !== '/signup';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen animated-gradient">
       {showNav && <Navigation />}
       <div className="max-w-[1600px] mx-auto">
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route
             path="/dashboard"
             element={

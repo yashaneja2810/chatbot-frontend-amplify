@@ -8,10 +8,9 @@ from ..core.config import get_settings
 from .vector_store import VectorStoreService
 from .auth import AuthService
 from .ai_service import AIService
+from threading import Lock
 
 settings = get_settings()
-
-from threading import Lock
 
 class ChatService:
     _instance = None
@@ -55,7 +54,6 @@ class ChatService:
             bots = await self.auth_service.get_user_bots(user_id, token)
             logger.info(f"Found {len(bots)} bots for user. Bot IDs: {[b.get('id', 'N/A') for b in bots]}")
             
-            # We need to look for bot_id in the 'bot_id' field and handle potential UUID formatting
             # Try both bot_id and id fields for matching, and normalize UUIDs
             matching_bot = next(
                 (bot for bot in bots if 
@@ -101,7 +99,6 @@ class ChatService:
                 return {"documents": []}
             
             try:
-                # Use Qdrant's scroll API to get document metadata
                 scroll_result = self.vector_store.scroll_collection(collection_name, limit=100)
                 points = scroll_result.get("points", [])
                 
@@ -109,7 +106,7 @@ class ChatService:
                     logger.info(f"No documents found in collection {collection_name}")
                     return {"documents": []}
                 
-                # Group points by filename to create document summaries
+                # Group points by filename
                 file_groups = {}
                 for point in points:
                     payload = point.get("payload", {})
@@ -126,13 +123,9 @@ class ChatService:
                     file_groups[filename]["chunks"].append(payload.get("text", ""))
                     file_groups[filename]["total_length"] += payload.get("chunk_length", 0)
                 
-                # Create document entries
                 documents = []
                 for i, (filename, data) in enumerate(file_groups.items()):
-                    # Use original file size if available, otherwise use sum of chunk lengths
                     file_size = data["original_file_size"] if data["original_file_size"] > 0 else data["total_length"]
-                    
-                    # Create preview text from first chunk
                     preview_text = ""
                     if data["chunks"]:
                         preview_text = data["chunks"][0][:100] + "..." if len(data["chunks"][0]) > 100 else data["chunks"][0]
@@ -152,13 +145,12 @@ class ChatService:
                 
             except Exception as e:
                 logger.error(f"Error getting documents from Qdrant for bot {bot_id}: {str(e)}")
-                # Fallback: return basic collection info
                 stats = self.vector_store.get_collection_stats(collection_name)
                 documents = [{
                     "id": "collection_info",
                     "bot_id": bot_id,
                     "filename": f"Documents ({stats.get('total_points', 0)} chunks)",
-                    "file_size": stats.get("total_points", 0) * 500,  # Estimate
+                    "file_size": stats.get("total_points", 0) * 500,
                     "created_at": datetime.now().isoformat(),
                     "text": f"This bot contains {stats.get('total_points', 0)} text chunks from uploaded documents.",
                     "chunk_count": stats.get("total_points", 0)
@@ -171,51 +163,61 @@ class ChatService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error retrieving documents: {str(e)}"
             )
-    
+
     async def get_response(self, bot_id: str, user_id: Optional[str], query: str, token: str = None) -> str:
         """Get response from Gemini based on context from vector store"""
         try:
-            # Verify bot access
             bot = await self.verify_bot_access(bot_id, user_id, token)
             collection_name = self._get_collection_name(bot_id)
             
-            # Get relevant context from vector store
-            results = self.vector_store.search(collection_name, query, limit=3)
+            # 🔹 Improved retrieval
+            results = self.vector_store.search(collection_name, query, limit=5)
             
             if not results:
-                return "I don't have any relevant information to answer your question."
+                return "I don’t have any relevant information to answer your question right now."
             
-            # Extract and format context chunks with relevance scores
+            # 🔹 Lowered threshold and deduplication
             context_chunks = []
             for result in results:
-                if result["score"] > 0.3:  # Relevance threshold
-                    context_chunks.append(result["text"])
+                text = result.get("text", "")
+                score = result.get("score", 0)
+                if score >= 0.2 and text.strip():
+                    context_chunks.append(text.strip())
             
+            # 🔹 Fallback broader search
             if not context_chunks:
-                return "I found some related information, but it wasn't relevant enough to provide a good answer."
+                try:
+                    broader_results = self.vector_store.search(collection_name, query, limit=8)
+                    context_chunks = [r.get("text", "") for r in broader_results if r.get("text")]
+                except Exception:
+                    pass
             
-            # Format context and create prompt
-            context = "\n\n".join(f"- {chunk}" for chunk in context_chunks)
-            bot_name = bot.get('name', 'an AI assistant')  # Default name if not provided
-            prompt = f"""Based on the following excerpts from a document, please answer the user's question.
-            You are {bot_name}, a helpful AI assistant.
-            Only use information from the provided context.
-            If the context doesn't contain relevant information, say so.
-            Keep your response concise and focused on the question.
+            # 🔹 Deduplicate & merge
+            unique_chunks = list(dict.fromkeys(context_chunks))
+            context = "\n\n".join(f"- {chunk}" for chunk in unique_chunks[:8])
+            bot_name = bot.get('name', 'an AI assistant')
             
-            Context:
-            {context}
-            
-            User Question: {query}"""
-            
+            # 🔹 Stronger reasoning prompt
+            prompt = f"""
+You are {bot_name}, a knowledgeable and friendly assistant.
+Use the following document excerpts to answer the question accurately and clearly.
+If needed, combine information from multiple excerpts. Avoid saying “not found” unless truly no related info exists.
+If you infer an answer from the context, state it confidently.
+
+Document Context:
+{context}
+
+User Question: {query}
+
+Answer (use helpful and natural tone):
+"""
             try:
-                # Get response from AI service
                 response_text = await self.ai_service.generate_response(prompt)
-                if not response_text:
-                    return "I apologize, but I'm having trouble generating a response right now. Please try again."
-                return response_text
-            except Exception as e:
-                return "I apologize, but I'm having trouble generating a response at the moment. Please try again later."
+                if not response_text or len(response_text.strip()) == 0:
+                    return "I'm sorry, I couldn't generate a meaningful response at this time. Please try again."
+                return response_text.strip()
+            except Exception:
+                return "I apologize, but I'm having trouble generating a response right now. Please try again later."
             
         except HTTPException:
             raise
@@ -224,15 +226,13 @@ class ChatService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error generating response: {str(e)}"
             )
-    
+
     async def process_documents(self, bot_id: str, user_id: str, texts: List[str], filenames: List[str] = None, file_sizes: List[int] = None):
         """Process and store document chunks in vector store"""
         try:
-            # Skip access verification during initial document upload
-            # The bot was just created in the upload endpoint
             collection_name = self._get_collection_name(bot_id)
             
-            # Create collection if it doesn't exist
+            # Create collection if not exists
             try:
                 self.vector_store.create_collection(collection_name)
                 logger.info(f"Created new collection {collection_name}")
@@ -242,7 +242,7 @@ class ChatService:
                     raise
                 logger.info(f"Collection {collection_name} already exists")
             
-            # Prepare metadata for each text chunk
+            # Prepare metadata
             metadata = []
             for i, text in enumerate(texts):
                 chunk_metadata = {
@@ -252,24 +252,21 @@ class ChatService:
                     "chunk_length": len(text),
                 }
                 
-                # Add filename if provided
                 if filenames and i < len(filenames):
                     chunk_metadata["filename"] = filenames[i]
                 elif filenames and len(filenames) == 1:
-                    # Single file, all chunks belong to it
                     chunk_metadata["filename"] = filenames[0]
                 else:
                     chunk_metadata["filename"] = f"document_chunk_{i}"
                 
-                # Add original file size if provided
                 if file_sizes and i < len(file_sizes):
                     chunk_metadata["original_file_size"] = file_sizes[i]
                 
                 metadata.append(chunk_metadata)
-                
-            # Store chunks in vector store with retry
+            
+            # Retry logic
             max_retries = 3
-            retry_delay = 1  # seconds
+            retry_delay = 1
             last_error = None
             
             for attempt in range(max_retries):
@@ -283,7 +280,6 @@ class ChatService:
                         logger.warning(f"Attempt {attempt + 1} failed, retrying in {retry_delay} seconds: {str(e)}")
                         await asyncio.sleep(retry_delay)
                         retry_delay *= 2
-                    
             raise last_error
             
         except Exception as e:

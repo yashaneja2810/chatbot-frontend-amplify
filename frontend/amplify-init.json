@@ -1,0 +1,13 @@
+{
+  "projectName": "chatbotbuilder",
+  "envName": "prod",
+  "defaultEditor": "vscode",
+  "appType": "javascript",
+  "framework": "react",
+  "config": {
+    "SourceDir": "src",
+    "DistributionDir": "dist",
+    "BuildCommand": "npm run build",
+    "StartCommand": "npm run dev"
+  }
+}

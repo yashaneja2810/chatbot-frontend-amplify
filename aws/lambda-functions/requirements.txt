@@ -1,0 +1,23 @@
+# AWS Lambda Requirements
+# These dependencies should be packaged as Lambda Layers
+
+# AWS SDK
+boto3>=1.28.0
+botocore>=1.31.0
+
+# Data processing
+numpy>=1.24.0
+
+# Google AI (if using Gemini)
+google-generativeai>=0.3.0
+
+# Document processing (for Lambda Layer)
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+chardet>=5.0.0
+
+# Note: For production, create separate Lambda Layers:
+# 1. aws-sdk-layer: boto3, botocore
+# 2. ml-layer: numpy, sentence-transformers (if using)
+# 3. document-layer: PyPDF2, python-docx
+# 4. ai-layer: google-generativeai

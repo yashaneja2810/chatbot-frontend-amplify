@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Upload, FileText, Loader2, CheckCircle2, XCircle, AlertCircle, Trash2, Sparkles, Bot, ArrowRight } from "lucide-react";
+import { Upload, FileText, Loader2, CheckCircle2, XCircle, AlertCircle, Trash2, Sparkles, Bot } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ChatWidget } from "../components/ChatWidget";
 import { createBot } from "../lib/botApi";
@@ -57,7 +57,7 @@ export const CreateBot: React.FC = () => {
 
   const handleFiles = useCallback((selectedFiles: File[]) => {
     const pdfFiles = selectedFiles.filter((file) => file.type === "application/pdf");
-    
+
     pdfFiles.forEach((file) => {
       const fileId = Date.now().toString() + Math.random();
       const newFile: UploadedFile = {
@@ -84,7 +84,7 @@ export const CreateBot: React.FC = () => {
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     if (e.dataTransfer.files) {
       const selectedFiles = Array.from(e.dataTransfer.files);
       handleFiles(selectedFiles);
@@ -134,22 +134,22 @@ export const CreateBot: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-[1600px] mx-auto px-6 py-8">
+    <div className="min-h-screen animated-gradient">
+      <div className="max-w-[1600px] mx-auto px-6 py-12">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-8"
+          className="space-y-10"
         >
-          <motion.div 
+          <motion.div
             variants={itemVariants}
-            className="mb-8 border-b border-gray-200 pb-6"
+            className="mb-10"
           >
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-5xl font-bold gradient-text mb-4">
               Create a New AI Bot
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 text-lg font-medium">
               Upload your company documents to create a custom AI bot that can answer questions about your business.
             </p>
           </motion.div>
@@ -157,15 +157,15 @@ export const CreateBot: React.FC = () => {
           {/* Main content grid */}
           <motion.div
             variants={itemVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
           >
             {/* Left side - Bot creation form or success message */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="glass-card p-8">
               {!botCreated ? (
                 <>
                   <div className="flex items-center gap-4">
                     <div className="flex-1">
-                      <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="companyName" className="block text-sm font-bold text-gray-700 mb-3">
                         Bot Name
                       </label>
                       <input
@@ -174,19 +174,20 @@ export const CreateBot: React.FC = () => {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                         placeholder="Enter a name for your bot"
-                        className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="input-field"
                       />
                     </div>
                   </div>
 
-                  <div className="mt-6">
+                  <div className="mt-8">
                     <div
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
-                      className={`relative border-2 border-dashed rounded-lg p-8 text-center ${
-                        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400"
-                      }`}
+                      className={`relative border-2 border-dashed rounded-3xl p-10 text-center transition-all duration-300 ${isDragging
+                        ? "border-blue-500 bg-blue-50/50 backdrop-blur-sm scale-105"
+                        : "border-gray-300/50 hover:border-blue-400 hover:bg-white/60 backdrop-blur-sm"
+                        }`}
                     >
                       <input
                         type="file"
@@ -197,40 +198,41 @@ export const CreateBot: React.FC = () => {
                         accept=".pdf"
                       />
 
-                      <div className="space-y-4">
-                        <div className="w-12 h-12 rounded-full bg-blue-50 mx-auto flex items-center justify-center">
-                          <Upload className="w-6 h-6 text-blue-500" />
+                      <div className="space-y-5">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 mx-auto flex items-center justify-center shadow-xl">
+                          <Upload className="w-8 h-8 text-white" />
                         </div>
 
                         <div>
                           <label
                             htmlFor="file-upload"
-                            className="inline-flex text-sm text-blue-600 hover:text-blue-700 font-medium cursor-pointer"
+                            className="inline-flex text-sm text-blue-600 hover:text-blue-700 font-bold cursor-pointer transition-colors"
                           >
                             <span>Upload PDF files</span>
                           </label>
-                          <p className="text-sm text-gray-500 mt-1">or drag and drop</p>
-                          <p className="text-xs text-gray-400 mt-2">Maximum file size: 10MB</p>
+                          <p className="text-sm text-gray-500 mt-2 font-medium">or drag and drop</p>
+                          <p className="text-xs text-gray-400 mt-3 font-medium">Maximum file size: 10MB</p>
                         </div>
                       </div>
                     </div>
 
                     {files.length > 0 && (
-                      <div className="space-y-3 mt-4">
+                      <div className="space-y-3 mt-6">
                         {files.map((file) => (
                           <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            whileHover={{ scale: 1.02 }}
                             key={file.id}
-                            className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm"
+                            className="flex items-center justify-between p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100/50 shadow-md hover:shadow-lg transition-all duration-300"
                           >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                <FileText className="w-5 h-5 text-blue-500" />
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                                <FileText className="w-6 h-6 text-white" />
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-sm font-bold text-gray-900">{file.name}</p>
+                                <p className="text-xs text-gray-500 font-medium">
                                   {(file.size / 1024 / 1024).toFixed(2)} MB
                                 </p>
                               </div>
@@ -238,28 +240,30 @@ export const CreateBot: React.FC = () => {
 
                             <div className="flex items-center gap-3">
                               {file.status === "uploading" && (
-                                <div className="w-32 h-1 rounded-full bg-gray-200 overflow-hidden">
+                                <div className="w-32 h-2 rounded-full bg-gray-200 overflow-hidden">
                                   <div
-                                    className="h-full bg-blue-500 transition-all duration-300"
+                                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
                                     style={{ width: `${file.progress}%` }}
                                   />
                                 </div>
                               )}
 
                               {file.status === "completed" && (
-                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                               )}
 
                               {file.status === "error" && (
-                                <XCircle className="w-5 h-5 text-red-500" />
+                                <XCircle className="w-6 h-6 text-red-500" />
                               )}
 
-                              <button
+                              <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => removeFile(file.id)}
-                                className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50"
+                                className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-red-50 hover:border-red-300 transition-colors"
                               >
-                                <Trash2 className="w-4 h-4 text-gray-400" />
-                              </button>
+                                <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                              </motion.button>
                             </div>
                           </motion.div>
                         ))}
@@ -267,20 +271,22 @@ export const CreateBot: React.FC = () => {
                     )}
 
                     {error && (
-                      <div className="flex items-center gap-2 text-red-500 bg-red-50 px-4 py-2 rounded-lg mt-4">
-                        <AlertCircle className="w-5 h-5" />
-                        <p className="text-sm">{error}</p>
-                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-3 text-red-600 bg-red-50/80 backdrop-blur-sm px-5 py-4 rounded-2xl mt-6 border border-red-200/50 shadow-lg"
+                      >
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <p className="text-sm font-semibold">{error}</p>
+                      </motion.div>
                     )}
 
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={handleCreateBot}
                       disabled={isCreating}
-                      className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium mt-6 ${
-                        isCreating
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : "bg-black text-white hover:bg-gray-800"
-                      }`}
+                      className="btn-primary w-full mt-8"
                     >
                       {isCreating ? (
                         <>
@@ -293,30 +299,34 @@ export const CreateBot: React.FC = () => {
                           Create Bot
                         </>
                       )}
-                    </button>
+                    </motion.button>
                   </div>
                 </>
               ) : (
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 mx-auto flex items-center justify-center">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="text-center space-y-6 py-12"
+                >
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 mx-auto flex items-center justify-center shadow-2xl">
+                    <CheckCircle2 className="w-10 h-10 text-white" />
                   </div>
-                  <h2 className="text-2xl font-bold">Bot Created Successfully!</h2>
-                  <p className="text-gray-600">Your bot is ready to use.</p>
-                </div>
+                  <h2 className="text-3xl font-bold gradient-text">Bot Created Successfully!</h2>
+                  <p className="text-gray-600 font-medium">Your bot is ready to use.</p>
+                </motion.div>
               )}
             </div>
 
             {/* Right side - Chat widget */}
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden sticky top-8">
+            <div className="glass-card overflow-hidden sticky top-8">
               {createdBotId ? (
                 <>
-                  <div className="p-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900">Test Your Bot - {companyName}</h3>
-                    <p className="text-sm text-gray-600">Start a conversation with your bot to test its responses</p>
+                  <div className="p-8 border-b border-gray-200/50">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Test Your Bot - {companyName}</h3>
+                    <p className="text-sm text-gray-600 font-medium">Start a conversation with your bot to test its responses</p>
                   </div>
                   <div className="p-0">
-                    <ChatWidget 
+                    <ChatWidget
                       botId={createdBotId}
                       botName={companyName}
                       companyName={companyName}
@@ -326,10 +336,14 @@ export const CreateBot: React.FC = () => {
                 </>
               ) : (
                 <div className="h-[600px] flex items-center justify-center text-gray-400 p-8 text-center">
-                  <div>
-                    <Bot className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-sm">Your chat widget will appear here after creating the bot</p>
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <Bot className="w-16 h-16 mx-auto mb-6 opacity-30" />
+                    <p className="text-sm font-medium">Your chat widget will appear here after creating the bot</p>
+                  </motion.div>
                 </div>
               )}
             </div>
