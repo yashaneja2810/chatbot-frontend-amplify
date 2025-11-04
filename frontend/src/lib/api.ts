@@ -7,7 +7,7 @@ export const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true,
+    // withCredentials removed - not needed for Bearer token auth
 });
 
 // Add a request interceptor for authentication
@@ -87,5 +87,22 @@ export const logout = async () => {
     } finally {
         // Force reload all instances to reset client state
         window.location.href = '/login';
+    }
+};
+
+export interface SignUpResponse {
+    message: string;
+    user: {
+        id: string;
+        email: string;
+    };
+}
+
+export const signup = async (email: string, password: string): Promise<SignUpResponse> => {
+    try {
+        const response = await api.post<SignUpResponse>('/auth/register', { email, password });
+        return response.data;
+    } catch (error) {
+        throw error;
     }
 };
