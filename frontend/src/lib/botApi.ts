@@ -19,10 +19,25 @@ export interface ChatMessage {
 }
 
 export const createBot = async (formData: FormData): Promise<CreateBotResponse> => {
-    const response = await api.post('/api/upload', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+    // Convert FormData to JSON with base64 files
+    const company_name = formData.get('company_name') as string;
+    const files = formData.getAll('files') as File[];
+    
+    const filesData = await Promise.all(
+        files.map(async (file) => {
+            const arrayBuffer = await file.arrayBuffer();
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+            return {
+                filename: file.name,
+                content: base64,
+                content_type: file.type
+            };
+        })
+    );
+    
+    const response = await api.post('/api/upload', {
+        company_name,
+        files: filesData
     });
     return response.data;
 };
