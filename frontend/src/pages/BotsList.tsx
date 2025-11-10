@@ -204,30 +204,34 @@ export const BotsList: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-16 px-8 flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a1a1a] py-16 px-8 flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-black" />
-          <span className="text-gray-600">Loading bots...</span>
+          <Loader2 className="w-6 h-6 animate-spin text-[#4a9eff]" />
+          <span className="text-gray-300">Loading bots...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen animated-gradient py-12">
+    <div className="min-h-screen bg-[#1a1a1a] py-12" style={{
+      backgroundImage: 'linear-gradient(rgba(74, 158, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 158, 255, 0.03) 1px, transparent 1px)',
+      backgroundSize: '50px 50px',
+      backgroundPosition: '-1px -1px'
+    }}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="space-y-10">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-5xl font-bold gradient-text mb-3">My Bots</h1>
-              <p className="text-gray-600 text-lg font-medium">
+              <h1 className="text-5xl font-bold text-white mb-3">My Bots</h1>
+              <p className="text-gray-300 text-lg font-medium">
                 View and manage your custom AI bots
               </p>
             </div>
 
             <div className="flex items-center gap-4">
               {error && (
-                <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-red-50/80 backdrop-blur-sm border border-red-200/50 text-red-700 shadow-lg">
+                <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-red-900/30 backdrop-blur-sm border border-red-500/30 text-red-300 shadow-lg">
                   <Activity className="w-5 h-5" />
                   <span className="text-sm font-semibold">{error}</span>
                 </div>
@@ -240,7 +244,7 @@ export const BotsList: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search bots..."
-                  className="w-72 pl-12 pr-5 py-3.5 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-400 focus:bg-white text-sm text-gray-900 placeholder-gray-500 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+                  className="w-72 pl-12 pr-5 py-3.5 bg-[#2a2a2a]/80 backdrop-blur-sm border border-gray-600/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#4a9eff]/30 focus:border-[#4a9eff]/50 text-sm text-white placeholder-gray-400 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
                 />
               </div>
             </div>
@@ -257,10 +261,10 @@ export const BotsList: React.FC = () => {
                   {/* Header with title and status */}
                   <div className="flex items-start justify-between mb-6 relative z-10">
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-3 truncate">
+                      <h2 className="text-2xl font-bold text-white mb-3 truncate">
                         {bot.name}
                       </h2>
-                      <div className="flex items-center gap-2 text-gray-500 text-sm font-medium">
+                      <div className="flex items-center gap-2 text-gray-300 text-sm font-medium">
                         <Calendar className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate">
                           {formatDate(bot.created_at)}
@@ -292,7 +296,7 @@ export const BotsList: React.FC = () => {
                       if (realDocs.length > 0) {
                         return (
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-gray-700 text-sm font-bold">
+                            <div className="flex items-center gap-2 text-gray-200 text-sm font-bold">
                               <FileText className="w-4 h-4" />
                               <span>Documents ({realDocs.length})</span>
                             </div>
@@ -313,14 +317,14 @@ export const BotsList: React.FC = () => {
                                 return (
                                   <div
                                     key={doc.id}
-                                    className="flex items-center gap-3 px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-100/50 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300"
+                                    className="flex items-center gap-3 px-4 py-3 bg-[#2a2a2a]/60 backdrop-blur-sm border border-gray-600/30 rounded-xl hover:bg-[#2a2a2a] hover:shadow-md transition-all duration-300"
                                   >
-                                    <FileText className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                                    <span className="truncate flex-1 text-sm text-gray-900 font-semibold">
+                                    <FileText className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                                    <span className="truncate flex-1 text-sm text-white font-semibold">
                                       {doc.filename}
                                     </span>
                                     {doc.file_size > 0 && (
-                                      <span className="text-xs text-gray-500 font-bold whitespace-nowrap">
+                                      <span className="text-xs text-gray-400 font-bold whitespace-nowrap">
                                         {formatFileSize(doc.file_size)}
                                       </span>
                                     )}
@@ -338,16 +342,16 @@ export const BotsList: React.FC = () => {
                   </div>
 
                   {/* Action buttons */}
-                  <div className="grid grid-cols-3 gap-3 pt-6 border-t border-gray-200/50 relative z-10">
+                  <div className="grid grid-cols-3 gap-3 pt-6 border-t border-gray-600/30 relative z-10">
                     <button
                       onClick={() => setSelectedBot(bot)}
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-gray-900 to-gray-700 text-white hover:from-gray-800 hover:to-gray-600 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                      className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-[#4a9eff] to-[#3a7ed8] text-white hover:from-[#5aafff] hover:to-[#4a8ee8] rounded-xl text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                     >
                       <Eye className="w-4 h-4" />
                       <span>Test</span>
                     </button>
                     <button
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-200/50 hover:bg-white hover:border-gray-300 rounded-xl text-sm font-bold text-gray-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
+                      className="flex items-center justify-center gap-2 px-4 py-3 bg-[#2a2a2a]/60 backdrop-blur-sm border border-gray-600/30 hover:bg-[#2a2a2a] hover:border-gray-500/50 rounded-xl text-sm font-bold text-gray-200 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
                       onClick={() => setWidgetModalBot(bot)}
                     >
                       <Code2 className="w-4 h-4" />
@@ -357,8 +361,8 @@ export const BotsList: React.FC = () => {
                       onClick={() => handleDeleteBot(bot)}
                       disabled={!!deletingBot}
                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg ${deletingBot === bot.bot_id
-                          ? "bg-red-100/80 backdrop-blur-sm border border-red-200/50 text-red-400 cursor-not-allowed"
-                          : "bg-white/60 backdrop-blur-sm border border-red-300/50 hover:bg-red-50 hover:border-red-400 text-red-600 hover:scale-105 active:scale-95"
+                          ? "bg-red-900/30 backdrop-blur-sm border border-red-500/30 text-red-400 cursor-not-allowed"
+                          : "bg-[#2a2a2a]/60 backdrop-blur-sm border border-red-500/30 hover:bg-red-900/30 hover:border-red-400/50 text-red-400 hover:scale-105 active:scale-95"
                         }`}
                     >
                       {deletingBot === bot.bot_id ? (
@@ -381,12 +385,12 @@ export const BotsList: React.FC = () => {
               className="glass-card-hover p-10 flex flex-col items-center justify-center gap-6 min-h-[300px] group relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-gray-900 to-gray-700 border-2 border-gray-200/50 flex items-center justify-center group-hover:scale-110 transition-all duration-500 shadow-xl relative z-10">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#4a9eff] to-[#3a7ed8] border-2 border-gray-600/30 flex items-center justify-center group-hover:scale-110 transition-all duration-500 shadow-xl relative z-10">
                 <Sparkles className="w-10 h-10 text-white" />
               </div>
               <div className="text-center relative z-10">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Create New Bot</h3>
-                <p className="text-sm text-gray-600 font-medium">
+                <h3 className="text-xl font-bold text-white mb-3">Create New Bot</h3>
+                <p className="text-sm text-gray-300 font-medium">
                   Upload documents to build a custom AI bot
                 </p>
               </div>
@@ -398,16 +402,16 @@ export const BotsList: React.FC = () => {
       {selectedBot && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300" onClick={handleClickOutside}>
           <div className="glass-card w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-            <div className="px-8 py-6 border-b border-gray-200/50 flex items-center justify-between flex-shrink-0">
+            <div className="px-8 py-6 border-b border-gray-600/30 flex items-center justify-between flex-shrink-0">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-white">
                   Test Bot: {selectedBot.name}
                 </h3>
-                <p className="text-gray-500 text-sm mt-1 font-medium">Chat with your AI assistant</p>
+                <p className="text-gray-300 text-sm mt-1 font-medium">Chat with your AI assistant</p>
               </div>
               <button
                 onClick={() => setSelectedBot(null)}
-                className="p-2.5 hover:bg-gray-100 rounded-xl text-gray-600 transition-all duration-300 hover:scale-110 active:scale-95"
+                className="p-2.5 hover:bg-[#2a2a2a] rounded-xl text-gray-300 transition-all duration-300 hover:scale-110 active:scale-95"
               >
                 <svg
                   className="w-5 h-5"
@@ -443,14 +447,14 @@ export const BotsList: React.FC = () => {
         {botToDelete && (
           <div className="space-y-6">
             <div>
-              <p className="text-gray-700">
+              <p className="text-gray-200">
                 Are you sure you want to delete the bot "<span className="font-semibold">{botToDelete.name}</span>"? This action cannot be undone.
               </p>
             </div>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setBotToDelete(null)}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 bg-[#2a2a2a] border border-gray-600/30 rounded-lg text-gray-200 text-sm font-medium hover:bg-[#333333] transition-colors"
               >
                 Cancel
               </button>
@@ -486,8 +490,8 @@ export const BotsList: React.FC = () => {
         {widgetModalBot && (
           <div className="space-y-4">
             <div>
-              <p className="text-neutral-700 mb-2">Copy and paste this script tag into your website's <code>&lt;body&gt;</code> to embed the chatbot widget for <b>{widgetModalBot.name}</b>:</p>
-              <pre className="bg-neutral-100 text-neutral-900 text-sm p-3 rounded border border-neutral-200 overflow-x-auto select-all">
+              <p className="text-gray-200 mb-2">Copy and paste this script tag into your website's <code>&lt;body&gt;</code> to embed the chatbot widget for <b>{widgetModalBot.name}</b>:</p>
+              <pre className="bg-[#2a2a2a] text-gray-100 text-sm p-3 rounded border border-gray-600/30 overflow-x-auto select-all">
                 {`<script 
   src="https://main.d3q8oj3a0m1x7a.amplifyapp.com/widget/widget.js"
   data-bot-id="${widgetModalBot.bot_id}"
@@ -496,7 +500,7 @@ export const BotsList: React.FC = () => {
 </script>`}
               </pre>
             </div>
-            <div className="text-xs text-neutral-500 space-y-2">
+            <div className="text-xs text-gray-300 space-y-2">
               <div>
                 <b>Customization options:</b>
                 <ul className="list-disc list-inside ml-2">
