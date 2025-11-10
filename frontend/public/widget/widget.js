@@ -9,8 +9,8 @@
   var companyName = script.getAttribute('data-company-name') || 'AI Assistant';
   var widgetColor = script.getAttribute('data-color') || '#2563eb';
 
-  // Theme support
-  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // Theme support - Always dark mode for professional look
+  var isDarkMode = true;
   var themeConfig = {
     light: {
       background: '#ffffff',
@@ -21,8 +21,8 @@
     dark: {
       background: '#1a1a1a',
       text: '#ffffff',
-      messageBackground: '#2d2d2d',
-      border: '#404040'
+      messageBackground: '#2a2a2a',
+      border: 'rgba(255, 255, 255, 0.1)'
     }
   };
 
@@ -41,15 +41,18 @@
   btn.style.right = '24px';
   btn.style.width = '56px';
   btn.style.height = '56px';
-  btn.style.background = widgetColor;
+  btn.style.background = '#ffffff';
   btn.style.borderRadius = '50%';
-  btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+  btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
   btn.style.display = 'flex';
   btn.style.alignItems = 'center';
   btn.style.justifyContent = 'center';
   btn.style.cursor = 'pointer';
   btn.style.zIndex = 9999;
-  btn.innerHTML = '<svg width="28" height="28" fill="#fff" viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.58 3 11c0 1.61.62 3.09 1.69 4.34-.13.5-.5 1.84-.7 2.56-.11.36.24.68.59.57.76-.25 2.12-.7 2.62-.86C8.7 18.47 10.28 19 12 19c4.97 0 9-3.58 9-8s-4.03-8-9-8zm-2 7h4v2h-4v-2zm8 0h-2v2h2v-2zm-8 4h4v2h-4v-2zm8 0h-2v2h2v-2z"/></svg>';
+  btn.style.transition = 'transform 0.2s';
+  btn.onmouseover = function() { btn.style.transform = 'scale(1.05)'; };
+  btn.onmouseout = function() { btn.style.transform = 'scale(1)'; };
+  btn.innerHTML = '<svg width="28" height="28" fill="#000" viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.58 3 11c0 1.61.62 3.09 1.69 4.34-.13.5-.5 1.84-.7 2.56-.11.36.24.68.59.57.76-.25 2.12-.7 2.62-.86C8.7 18.47 10.28 19 12 19c4.97 0 9-3.58 9-8s-4.03-8-9-8zm-2 7h4v2h-4v-2zm8 0h-2v2h2v-2zm-8 4h4v2h-4v-2zm8 0h-2v2h2v-2z"/></svg>';
 
   // Create chat window
   var chat = document.createElement('div');
@@ -57,10 +60,11 @@
   chat.style.bottom = '90px';
   chat.style.right = '24px';
   chat.style.width = '340px';
-  chat.style.height = '420px';
-  chat.style.background = '#fff';
+  chat.style.height = '480px';
+  chat.style.background = '#2a2a2a';
   chat.style.borderRadius = '12px';
-  chat.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+  chat.style.boxShadow = '0 8px 32px rgba(0,0,0,0.4)';
+  chat.style.border = '1px solid rgba(255, 255, 255, 0.1)';
   chat.style.display = 'none';
   chat.style.flexDirection = 'column';
   chat.style.overflow = 'hidden';
@@ -77,73 +81,107 @@
 
   // Chat header with controls
   var header = document.createElement('div');
-  header.style.background = widgetColor;
+  header.style.background = '#1a1a1a';
   header.style.color = '#fff';
-  header.style.padding = '12px 16px';
+  header.style.padding = '16px';
   header.style.display = 'flex';
   header.style.justifyContent = 'space-between';
   header.style.alignItems = 'center';
   header.style.cursor = 'move';
+  header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
   
-  // Company name and controls
+  // Company name with status indicator
+  var titleContainer = document.createElement('div');
+  titleContainer.style.display = 'flex';
+  titleContainer.style.alignItems = 'center';
+  titleContainer.style.gap = '8px';
+  
+  var statusDot = document.createElement('div');
+  statusDot.style.width = '8px';
+  statusDot.style.height = '8px';
+  statusDot.style.borderRadius = '50%';
+  statusDot.style.background = '#10b981';
+  statusDot.style.boxShadow = '0 0 8px rgba(16, 185, 129, 0.5)';
+  
   var title = document.createElement('div');
-  title.style.fontWeight = 'bold';
+  title.style.fontWeight = '600';
+  title.style.fontSize = '14px';
   title.innerText = companyName;
+  
+  titleContainer.appendChild(statusDot);
+  titleContainer.appendChild(title);
   
   var controls = document.createElement('div');
   controls.style.display = 'flex';
-  controls.style.gap = '8px';
-  
-  // Theme toggle
-  var themeBtn = document.createElement('button');
-  themeBtn.innerHTML = '🌓';
-  themeBtn.style.background = 'none';
-  themeBtn.style.border = 'none';
-  themeBtn.style.color = '#fff';
-  themeBtn.style.cursor = 'pointer';
-  themeBtn.title = 'Toggle theme';
+  controls.style.gap = '4px';
   
   // Size toggle
   var sizeBtn = document.createElement('button');
   sizeBtn.innerHTML = '⛶';
   sizeBtn.style.background = 'none';
   sizeBtn.style.border = 'none';
-  sizeBtn.style.color = '#fff';
+  sizeBtn.style.color = '#9ca3af';
   sizeBtn.style.cursor = 'pointer';
+  sizeBtn.style.padding = '4px 8px';
+  sizeBtn.style.borderRadius = '4px';
+  sizeBtn.style.transition = 'all 0.2s';
   sizeBtn.title = 'Change size';
+  sizeBtn.onmouseover = function() { sizeBtn.style.background = 'rgba(255, 255, 255, 0.1)'; sizeBtn.style.color = '#fff'; };
+  sizeBtn.onmouseout = function() { sizeBtn.style.background = 'none'; sizeBtn.style.color = '#9ca3af'; };
   
-  controls.appendChild(themeBtn);
   controls.appendChild(sizeBtn);
   
-  header.appendChild(title);
+  header.appendChild(titleContainer);
   header.appendChild(controls);
   chat.appendChild(header);
 
   // Chat messages
   var messages = document.createElement('div');
   messages.style.flex = '1';
-  messages.style.padding = '12px';
+  messages.style.padding = '16px';
   messages.style.overflowY = 'auto';
+  messages.style.background = '#1a1a1a';
   chat.appendChild(messages);
 
   // Chat input
   var inputWrap = document.createElement('div');
   inputWrap.style.display = 'flex';
-  inputWrap.style.borderTop = '1px solid #eee';
+  inputWrap.style.gap = '8px';
+  inputWrap.style.padding = '16px';
+  inputWrap.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+  inputWrap.style.background = '#1a1a1a';
+  
   var input = document.createElement('input');
   input.type = 'text';
   input.placeholder = 'Type your message...';
   input.style.flex = '1';
-  input.style.padding = '10px';
-  input.style.border = 'none';
+  input.style.padding = '10px 12px';
+  input.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+  input.style.borderRadius = '8px';
   input.style.outline = 'none';
+  input.style.background = '#2a2a2a';
+  input.style.color = '#fff';
+  input.style.fontSize = '14px';
+  input.style.transition = 'all 0.2s';
+  input.onfocus = function() { input.style.borderColor = 'rgba(255, 255, 255, 0.3)'; };
+  input.onblur = function() { input.style.borderColor = 'rgba(255, 255, 255, 0.1)'; };
+  
   var sendBtn = document.createElement('button');
-  sendBtn.innerText = 'Send';
-  sendBtn.style.background = widgetColor;
-  sendBtn.style.color = '#fff';
+  sendBtn.innerHTML = '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>';
+  sendBtn.style.background = '#ffffff';
+  sendBtn.style.color = '#000';
   sendBtn.style.border = 'none';
-  sendBtn.style.padding = '0 16px';
+  sendBtn.style.padding = '10px 16px';
+  sendBtn.style.borderRadius = '8px';
   sendBtn.style.cursor = 'pointer';
+  sendBtn.style.fontWeight = '600';
+  sendBtn.style.transition = 'all 0.2s';
+  sendBtn.style.display = 'flex';
+  sendBtn.style.alignItems = 'center';
+  sendBtn.style.justifyContent = 'center';
+  sendBtn.onmouseover = function() { sendBtn.style.background = '#f3f4f6'; };
+  sendBtn.onmouseout = function() { sendBtn.style.background = '#ffffff'; };
+  
   inputWrap.appendChild(input);
   inputWrap.appendChild(sendBtn);
   chat.appendChild(inputWrap);
@@ -197,17 +235,20 @@
   // Send message
   function addMessage(text, from) {
     var msg = document.createElement('div');
-    msg.style.margin = '8px 0';
+    msg.style.margin = '12px 0';
     msg.style.textAlign = from === 'user' ? 'right' : 'left';
     
     var bubble = document.createElement('span');
     bubble.className = 'message-bubble ' + (from === 'user' ? 'user-message' : 'bot-message');
     bubble.style.display = 'inline-block';
     bubble.style.maxWidth = '80%';
-    bubble.style.padding = '8px 12px';
-    bubble.style.borderRadius = '8px';
-    bubble.style.background = from === 'user' ? widgetColor : (isDarkMode ? themeConfig.dark.messageBackground : themeConfig.light.messageBackground);
-    bubble.style.color = from === 'user' ? '#fff' : (isDarkMode ? themeConfig.dark.text : themeConfig.light.text);
+    bubble.style.padding = '10px 14px';
+    bubble.style.borderRadius = '12px';
+    bubble.style.fontSize = '14px';
+    bubble.style.lineHeight = '1.5';
+    bubble.style.background = from === 'user' ? '#ffffff' : '#2a2a2a';
+    bubble.style.color = from === 'user' ? '#000' : '#fff';
+    bubble.style.border = from === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.1)';
     bubble.style.whiteSpace = 'pre-wrap';
     bubble.innerHTML = from === 'user' ? text : formatBotResponse(text);
     
@@ -270,17 +311,16 @@
     if (e.key === 'Enter') sendMessage();
   });
   
-  themeBtn.onclick = toggleTheme;
   sizeBtn.onclick = toggleSize;
   
   header.addEventListener('mousedown', dragStart);
   document.addEventListener('mousemove', drag);
   document.addEventListener('mouseup', dragEnd);
 
-  // Initial theme
-  if (isDarkMode) {
-    toggleTheme();
-  }
+  // Add initial greeting message
+  setTimeout(function() {
+    addMessage("Hello! I'm your AI assistant. How can I help you today?", 'bot');
+  }, 500);
 
   // Add to page
   document.body.appendChild(btn);

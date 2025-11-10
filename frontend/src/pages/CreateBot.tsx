@@ -142,59 +142,65 @@ export const CreateBot: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen animated-gradient">
-      <div className="max-w-[1600px] mx-auto px-6 py-12">
+    <div className="min-h-screen bg-[#1a1a1a]" style={{
+      backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)',
+      backgroundSize: '50px 50px',
+      backgroundPosition: '-1px -1px'
+    }}>
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-10"
+          className="space-y-8"
         >
           <motion.div
             variants={itemVariants}
-            className="mb-10"
+            className="text-center"
           >
-            <h1 className="text-5xl font-bold gradient-text mb-4">
+            <h1 className="text-4xl font-bold text-white mb-3">
               Create a New AI Bot
             </h1>
-            <p className="text-gray-600 text-lg font-medium">
-              Upload your company documents to create a custom AI bot that can answer questions about your business.
+            <p className="text-gray-400 text-base">
+              Upload your documents to create a custom AI bot
             </p>
           </motion.div>
 
-          {/* Main content grid */}
+          {/* Main content - centered when not created, split when created */}
           <motion.div
             variants={itemVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
+            className={`transition-all duration-500 ${
+              botCreated 
+                ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
+                : 'flex justify-center'
+            }`}
           >
             {/* Left side - Bot creation form or success message */}
-            <div className="glass-card p-8">
+            <div className={`glass-card p-8 ${!botCreated ? 'max-w-2xl w-full' : ''}`}>
               {!botCreated ? (
                 <>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <label htmlFor="companyName" className="block text-sm font-bold text-gray-700 mb-3">
-                        Bot Name
-                      </label>
-                      <input
-                        type="text"
-                        id="companyName"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        placeholder="Enter a name for your bot"
-                        className="input-field"
-                      />
-                    </div>
+                  <div className="mb-6">
+                    <label htmlFor="companyName" className="block text-sm font-semibold text-gray-200 mb-2">
+                      Bot Name
+                    </label>
+                    <input
+                      type="text"
+                      id="companyName"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      placeholder="Enter a name for your bot"
+                      className="input-field"
+                    />
                   </div>
 
-                  <div className="mt-8">
+                  <div>
                     <div
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
-                      className={`relative border-2 border-dashed rounded-3xl p-10 text-center transition-all duration-300 ${isDragging
-                        ? "border-blue-500 bg-blue-50/50 backdrop-blur-sm scale-105"
-                        : "border-gray-300/50 hover:border-blue-400 hover:bg-white/60 backdrop-blur-sm"
+                      className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all duration-300 ${isDragging
+                        ? "border-white/50 bg-[#2a2a2a] scale-[1.02]"
+                        : "border-gray-700/50 hover:border-gray-600/50 hover:bg-[#2a2a2a]/50"
                         }`}
                     >
                       <input
@@ -206,20 +212,20 @@ export const CreateBot: React.FC = () => {
                         accept=".pdf"
                       />
 
-                      <div className="space-y-5">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 mx-auto flex items-center justify-center shadow-xl">
-                          <Upload className="w-8 h-8 text-white" />
+                      <div className="space-y-4">
+                        <div className="w-16 h-16 rounded-xl bg-white mx-auto flex items-center justify-center shadow-lg">
+                          <Upload className="w-8 h-8 text-black" />
                         </div>
 
                         <div>
                           <label
                             htmlFor="file-upload"
-                            className="inline-flex text-sm text-blue-600 hover:text-blue-700 font-bold cursor-pointer transition-colors"
+                            className="inline-flex text-sm text-white hover:text-gray-200 font-semibold cursor-pointer transition-colors"
                           >
                             <span>Upload PDF files</span>
                           </label>
-                          <p className="text-sm text-gray-500 mt-2 font-medium">or drag and drop</p>
-                          <p className="text-xs text-gray-400 mt-3 font-medium">Maximum file size: 10MB</p>
+                          <p className="text-sm text-gray-400 mt-2">or drag and drop</p>
+                          <p className="text-xs text-gray-500 mt-2">Maximum file size: 10MB</p>
                         </div>
                       </div>
                     </div>
@@ -230,17 +236,17 @@ export const CreateBot: React.FC = () => {
                           <motion.div
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            whileHover={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.01 }}
                             key={file.id}
-                            className="flex items-center justify-between p-5 bg-white/60 backdrop-blur-sm rounded-2xl border border-gray-100/50 shadow-md hover:shadow-lg transition-all duration-300"
+                            className="flex items-center justify-between p-4 bg-[#2a2a2a]/60 backdrop-blur-sm rounded-xl border border-gray-700/30 hover:border-gray-600/40 transition-all duration-300"
                           >
-                            <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-                                <FileText className="w-6 h-6 text-white" />
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-md">
+                                <FileText className="w-5 h-5 text-black" />
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-gray-900">{file.name}</p>
-                                <p className="text-xs text-gray-500 font-medium">
+                                <p className="text-sm font-semibold text-white">{file.name}</p>
+                                <p className="text-xs text-gray-400">
                                   {(file.size / 1024 / 1024).toFixed(2)} MB
                                 </p>
                               </div>
@@ -248,29 +254,29 @@ export const CreateBot: React.FC = () => {
 
                             <div className="flex items-center gap-3">
                               {file.status === "uploading" && (
-                                <div className="w-32 h-2 rounded-full bg-gray-200 overflow-hidden">
+                                <div className="w-24 h-1.5 rounded-full bg-gray-700 overflow-hidden">
                                   <div
-                                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                                    className="h-full bg-white transition-all duration-300"
                                     style={{ width: `${file.progress}%` }}
                                   />
                                 </div>
                               )}
 
                               {file.status === "completed" && (
-                                <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                                <CheckCircle2 className="w-5 h-5 text-green-500" />
                               )}
 
                               {file.status === "error" && (
-                                <XCircle className="w-6 h-6 text-red-500" />
+                                <XCircle className="w-5 h-5 text-red-500" />
                               )}
 
                               <motion.button
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => removeFile(file.id)}
-                                className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center hover:bg-red-50 hover:border-red-300 transition-colors"
+                                className="w-8 h-8 rounded-lg border border-gray-700/30 flex items-center justify-center hover:bg-red-900/30 hover:border-red-500/30 transition-colors"
                               >
-                                <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                                <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-400" />
                               </motion.button>
                             </div>
                           </motion.div>
@@ -282,19 +288,19 @@ export const CreateBot: React.FC = () => {
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-3 text-red-600 bg-red-50/80 backdrop-blur-sm px-5 py-4 rounded-2xl mt-6 border border-red-200/50 shadow-lg"
+                        className="flex items-center gap-3 text-red-300 bg-red-900/30 backdrop-blur-sm px-4 py-3 rounded-xl mt-6 border border-red-500/30"
                       >
                         <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                        <p className="text-sm font-semibold">{error}</p>
+                        <p className="text-sm font-medium">{error}</p>
                       </motion.div>
                     )}
 
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
                       onClick={handleCreateBot}
                       disabled={isCreating}
-                      className="btn-primary w-full mt-8"
+                      className="btn-primary w-full mt-6 flex items-center justify-center gap-2"
                     >
                       {isCreating ? (
                         <>
@@ -314,47 +320,32 @@ export const CreateBot: React.FC = () => {
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="text-center space-y-6 py-12"
+                  className="text-center space-y-4 py-8"
                 >
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 mx-auto flex items-center justify-center shadow-2xl">
-                    <CheckCircle2 className="w-10 h-10 text-white" />
+                  <div className="w-16 h-16 rounded-2xl bg-green-500 mx-auto flex items-center justify-center shadow-xl">
+                    <CheckCircle2 className="w-8 h-8 text-white" />
                   </div>
-                  <h2 className="text-3xl font-bold gradient-text">Bot Created Successfully!</h2>
-                  <p className="text-gray-600 font-medium">Your bot is ready to use.</p>
+                  <h2 className="text-2xl font-bold text-white">Bot Created!</h2>
+                  <p className="text-gray-400 text-sm">Test your bot in the chat window →</p>
                 </motion.div>
               )}
             </div>
 
-            {/* Right side - Chat widget */}
-            <div className="glass-card overflow-hidden sticky top-8">
-              {createdBotId ? (
-                <>
-                  <div className="p-8 border-b border-gray-200/50">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Test Your Bot - {companyName}</h3>
-                    <p className="text-sm text-gray-600 font-medium">Start a conversation with your bot to test its responses</p>
-                  </div>
-                  <div className="p-0">
-                    <ChatWidget
-                      botId={createdBotId}
-                      botName={companyName}
-                      companyName={companyName}
-                      className="h-[400px] border-none"
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="h-[600px] flex items-center justify-center text-gray-400 p-8 text-center">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Bot className="w-16 h-16 mx-auto mb-6 opacity-30" />
-                    <p className="text-sm font-medium">Your chat widget will appear here after creating the bot</p>
-                  </motion.div>
+            {/* Right side - Chat widget (only shown when bot is created) */}
+            {botCreated && createdBotId && (
+              <div className="glass-card overflow-hidden">
+                <div className="p-4 border-b border-gray-700/30">
+                  <h3 className="text-lg font-semibold text-white mb-1">Test Your Bot</h3>
+                  <p className="text-sm text-gray-400">{companyName}</p>
                 </div>
-              )}
-            </div>
+                <ChatWidget
+                  botId={createdBotId}
+                  botName={companyName}
+                  companyName={companyName}
+                  className="h-[500px] border-none rounded-none"
+                />
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </div>

@@ -10,13 +10,13 @@ interface ModalProps {
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full relative">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
-          <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="bg-[#2a2a2a] border border-gray-700/30 rounded-xl shadow-2xl max-w-lg w-full relative">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700/30">
+          <h2 className="text-lg font-semibold text-white">{title}</h2>
           <button
             onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-700 focus:outline-none"
+            className="text-gray-400 hover:text-white focus:outline-none transition-colors"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
