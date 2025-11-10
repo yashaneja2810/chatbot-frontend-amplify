@@ -206,7 +206,7 @@ export const BotsList: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#1a1a1a] py-16 px-8 flex items-center justify-center">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-[#4a9eff]" />
+          <Loader2 className="w-6 h-6 animate-spin text-white" />
           <span className="text-gray-300">Loading bots...</span>
         </div>
       </div>
@@ -244,7 +244,7 @@ export const BotsList: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search bots..."
-                  className="w-72 pl-12 pr-5 py-3.5 bg-[#2a2a2a]/80 backdrop-blur-sm border border-gray-600/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#4a9eff]/30 focus:border-[#4a9eff]/50 text-sm text-white placeholder-gray-400 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+                  className="w-72 pl-12 pr-5 py-3.5 bg-[#2a2a2a]/80 backdrop-blur-sm border border-gray-600/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:border-gray-500/50 text-sm text-white placeholder-gray-400 shadow-md hover:shadow-lg transition-all duration-300 font-medium"
                 />
               </div>
             </div>
@@ -345,7 +345,7 @@ export const BotsList: React.FC = () => {
                   <div className="grid grid-cols-3 gap-3 pt-6 border-t border-gray-600/30 relative z-10">
                     <button
                       onClick={() => setSelectedBot(bot)}
-                      className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-br from-[#4a9eff] to-[#3a7ed8] text-white hover:from-[#5aafff] hover:to-[#4a8ee8] rounded-xl text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                      className="flex items-center justify-center gap-2 px-4 py-3 bg-white text-black hover:bg-gray-100 rounded-xl text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                     >
                       <Eye className="w-4 h-4" />
                       <span>Test</span>
@@ -385,8 +385,8 @@ export const BotsList: React.FC = () => {
               className="glass-card-hover p-10 flex flex-col items-center justify-center gap-6 min-h-[300px] group relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#4a9eff] to-[#3a7ed8] border-2 border-gray-600/30 flex items-center justify-center group-hover:scale-110 transition-all duration-500 shadow-xl relative z-10">
-                <Sparkles className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 rounded-3xl bg-white border-2 border-gray-600/30 flex items-center justify-center group-hover:scale-110 transition-all duration-500 shadow-xl relative z-10">
+                <Sparkles className="w-10 h-10 text-black" />
               </div>
               <div className="text-center relative z-10">
                 <h3 className="text-xl font-bold text-white mb-3">Create New Bot</h3>
