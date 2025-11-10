@@ -13,6 +13,9 @@ export const SignUp: React.FC = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+    const [showOtpInput, setShowOtpInput] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [isVerifying, setIsVerifying] = useState(false);
     const navigate = useNavigate();
 
     const validateForm = () => {
@@ -51,15 +54,66 @@ export const SignUp: React.FC = () => {
 
         try {
             await signup(email, password);
-            setShowVerificationMessage(true);
+            setShowOtpInput(true);
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.error || err.response?.data?.detail || 'Failed to create account. Please try again.';
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-            // Redirect to login after 3 seconds
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+
+        if (!otp || otp.length !== 6) {
+            setError('Please enter a valid 6-digit code');
+            return;
+        }
+
+        setIsVerifying(true);
+
+        try {
+            const response = await fetch('https://g31hjitjqk.execute-api.us-east-1.amazonaws.com/prod/auth/verify-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    code: otp
+                })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Verification failed');
+            }
+
+            setShowVerificationMessage(true);
+            setShowOtpInput(false);
+
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
         } catch (err: any) {
-            const errorMessage = err.response?.data?.detail || 'Failed to create account. Please try again.';
-            setError(errorMessage);
+            setError(err.message || 'Failed to verify code. Please try again.');
+        } finally {
+            setIsVerifying(false);
+        }
+    };
+
+    const handleResendOtp = async () => {
+        setError('');
+        setIsLoading(true);
+
+        try {
+            await signup(email, password);
+            setError('Verification code resent!');
+            setTimeout(() => setError(''), 3000);
+        } catch (err: any) {
+            setError('Failed to resend code. Please try again.');
         } finally {
             setIsLoading(false);
         }
@@ -69,13 +123,11 @@ export const SignUp: React.FC = () => {
         <div className="min-h-screen flex animated-gradient">
             {/* Left Side - Branding */}
             <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex-col items-center justify-center p-12 relative overflow-hidden">
-                {/* Animated background elements */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl float-animation"></div>
                     <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full blur-3xl float-animation" style={{ animationDelay: '2s' }}></div>
                 </div>
 
-                {/* Subtle grid pattern */}
                 <div className="absolute inset-0 opacity-5" style={{
                     backgroundImage: 'linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)',
                     backgroundSize: '50px 50px'
@@ -125,9 +177,8 @@ export const SignUp: React.FC = () => {
                 </div>
             </div>
 
-            {/* Right Side - Sign Up Form */}
+            {/* Right Side - Forms */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
-                {/* Floating background elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl float-animation"></div>
                     <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl float-animation" style={{ animationDelay: '3s' }}></div>
@@ -135,7 +186,178 @@ export const SignUp: React.FC = () => {
 
                 <div className="max-w-md w-full relative z-10">
                     <AnimatePresence mode="wait">
-                        {!showVerificationMessage ? (
+                        {showVerificationMessage ? (
+                            <motion.div
+                                key="verification-message"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="glass-card p-12 text-center"
+                            >
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                                    className="w-24 h-24 rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 mx-auto flex items-center justify-center shadow-2xl mb-8"
+                                >
+                                    <CheckCircle2 className="w-12 h-12 text-white" />
+                                </motion.div>
+
+                                <motion.h2
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-3xl font-bold gradient-text mb-4"
+                                >
+                                    Account Verified!
+                                </motion.h2>
+
+                                <motion.p
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="text-gray-600 font-medium mb-2"
+                                >
+                                    Your account has been successfully verified
+                                </motion.p>
+
+                                <motion.p
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-gray-900 font-bold text-lg mb-6"
+                                >
+                                    {email}
+                                </motion.p>
+
+                                <motion.p
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6 }}
+                                    className="text-sm text-gray-500 font-medium"
+                                >
+                                    Redirecting to login page...
+                                </motion.p>
+
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.7 }}
+                                    className="mt-8"
+                                >
+                                    <div className="w-48 h-1 bg-gray-200 rounded-full mx-auto overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: "100%" }}
+                                            transition={{ duration: 3, ease: "linear" }}
+                                            className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
+                                        />
+                                    </div>
+                                </motion.div>
+                            </motion.div>
+                        ) : showOtpInput ? (
+                            <motion.div
+                                key="otp-input"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="glass-card p-10 fade-in-up"
+                            >
+                                <div className="mb-10">
+                                    <h2 className="text-4xl font-bold gradient-text mb-3">Verify Your Email</h2>
+                                    <p className="text-gray-600 font-medium">
+                                        We've sent a 6-digit code to <span className="font-bold text-gray-900">{email}</span>
+                                    </p>
+                                </div>
+
+                                <form onSubmit={handleVerifyOtp} className="space-y-6">
+                                    <div>
+                                        <label htmlFor="otp" className="block text-sm font-semibold mb-3 text-gray-700">
+                                            Verification Code
+                                        </label>
+                                        <input
+                                            id="otp"
+                                            name="otp"
+                                            type="text"
+                                            required
+                                            maxLength={6}
+                                            className="input-field text-center text-2xl tracking-widest font-bold"
+                                            placeholder="000000"
+                                            value={otp}
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(/\D/g, '');
+                                                setOtp(value);
+                                            }}
+                                        />
+                                        <p className="text-xs text-gray-500 mt-2 font-medium text-center">
+                                            Enter the 6-digit code from your email
+                                        </p>
+                                    </div>
+
+                                    {error && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className={`flex items-center gap-3 p-4 backdrop-blur-sm border rounded-2xl shadow-lg ${
+                                                error.includes('resent') 
+                                                    ? 'bg-green-50/80 border-green-200/50' 
+                                                    : 'bg-red-50/80 border-red-200/50'
+                                            }`}
+                                        >
+                                            <svg className={`w-5 h-5 flex-shrink-0 ${error.includes('resent') ? 'text-green-600' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span className={`text-sm font-medium ${error.includes('resent') ? 'text-green-600' : 'text-red-600'}`}>{error}</span>
+                                        </motion.div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isVerifying || otp.length !== 6}
+                                        className="btn-primary w-full"
+                                    >
+                                        {isVerifying ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Verifying...
+                                            </>
+                                        ) : (
+                                            'Verify Email'
+                                        )}
+                                    </button>
+
+                                    <div className="text-center">
+                                        <p className="text-sm text-gray-600">
+                                            Didn't receive the code?{' '}
+                                            <button
+                                                type="button"
+                                                onClick={handleResendOtp}
+                                                disabled={isLoading}
+                                                className="font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-300 disabled:opacity-50"
+                                            >
+                                                {isLoading ? 'Sending...' : 'Resend'}
+                                            </button>
+                                        </p>
+                                    </div>
+                                </form>
+
+                                <div className="mt-8 text-center">
+                                    <button
+                                        onClick={() => {
+                                            setShowOtpInput(false);
+                                            setOtp('');
+                                            setError('');
+                                        }}
+                                        className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                                    >
+                                        ← Back to sign up
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ) : (
                             <motion.div
                                 key="signup-form"
                                 initial={{ opacity: 0, y: 20 }}
@@ -272,77 +494,6 @@ export const SignUp: React.FC = () => {
                                         </a>
                                     </p>
                                 </div>
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                key="verification-message"
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                className="glass-card p-12 text-center"
-                            >
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                                    className="w-24 h-24 rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 mx-auto flex items-center justify-center shadow-2xl mb-8"
-                                >
-                                    <CheckCircle2 className="w-12 h-12 text-white" />
-                                </motion.div>
-
-                                <motion.h2
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 }}
-                                    className="text-3xl font-bold gradient-text mb-4"
-                                >
-                                    Verification Email Sent!
-                                </motion.h2>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.4 }}
-                                    className="text-gray-600 font-medium mb-2"
-                                >
-                                    We've sent a verification link to
-                                </motion.p>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5 }}
-                                    className="text-gray-900 font-bold text-lg mb-6"
-                                >
-                                    {email}
-                                </motion.p>
-
-                                <motion.p
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.6 }}
-                                    className="text-sm text-gray-500 font-medium"
-                                >
-                                    Please verify your email to complete registration.
-                                    <br />
-                                    Redirecting to login page...
-                                </motion.p>
-
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.7 }}
-                                    className="mt-8"
-                                >
-                                    <div className="w-48 h-1 bg-gray-200 rounded-full mx-auto overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: "100%" }}
-                                            transition={{ duration: 3, ease: "linear" }}
-                                            className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
-                                        />
-                                    </div>
-                                </motion.div>
                             </motion.div>
                         )}
                     </AnimatePresence>

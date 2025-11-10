@@ -117,17 +117,25 @@ export const CreateBot: React.FC = () => {
     setIsCreating(true);
 
     try {
+      console.log('Creating bot with:', companyName, files.length, 'files');
+
       const formData = new FormData();
       formData.append("company_name", companyName);
       files.forEach((file) => {
+        console.log('Adding file:', file.name, file.size);
         formData.append("files", file.file);
       });
 
+      console.log('Calling createBot API...');
       const response = await createBot(formData);
+      console.log('Bot created successfully:', response);
+
       setCreatedBotId(response.bot_id);
       setBotCreated(true);
-    } catch (err) {
-      setError("Failed to create bot. Please try again.");
+    } catch (err: any) {
+      console.error('Error creating bot:', err);
+      console.error('Error details:', err.response?.data || err.message);
+      setError(err.response?.data?.error || err.message || "Failed to create bot. Please try again.");
     } finally {
       setIsCreating(false);
     }

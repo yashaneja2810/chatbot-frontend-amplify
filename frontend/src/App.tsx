@@ -27,7 +27,7 @@ const AppRoutes = () => {
   const showNav = isAuthenticated && location.pathname !== '/login' && location.pathname !== '/signup';
 
   return (
-    <div className="min-h-screen animated-gradient">
+    <div className="min-h-screen bg-black">
       {showNav && <Navigation />}
       <div className="max-w-[1600px] mx-auto">
         <Routes>

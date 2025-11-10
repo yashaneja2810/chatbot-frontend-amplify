@@ -106,7 +106,7 @@ export const BotsList: React.FC = () => {
       if (Array.isArray(botsData)) {
         setBots(botsData);
         setIsLoading(false); // Set loading false immediately after bots are loaded
-        
+
         // Fetch documents in background (non-blocking)
         if (botsData.length > 0) {
           botsData.forEach(bot => {
@@ -117,7 +117,7 @@ export const BotsList: React.FC = () => {
         setError('Invalid response format from server');
       }
     } catch (error: any) {
-      const errorMessage = error.response?.status === 401 
+      const errorMessage = error.response?.status === 401
         ? 'Session expired. Please log in again.'
         : 'Failed to fetch bots. Please try again later.';
       console.error('Error fetching bots:', error);
@@ -133,7 +133,7 @@ export const BotsList: React.FC = () => {
   // Fetch documents for a specific bot (lazy loading)
   const fetchBotDocuments = async (botId: string) => {
     if (documents[botId]) return; // Already loaded
-    
+
     try {
       const docsResponse = await api.get(`/api/bots/${botId}/documents`);
       setDocuments(prev => ({
@@ -273,10 +273,10 @@ export const BotsList: React.FC = () => {
                   </div>
 
                   <div className="space-y-4 mb-8 relative z-10">
-                    
+
                     {(() => {
                       const docs = documents[bot.bot_id];
-                      
+
                       // Show loading state if documents haven't been fetched yet
                       if (docs === undefined) {
                         return (
@@ -286,9 +286,9 @@ export const BotsList: React.FC = () => {
                           </div>
                         );
                       }
-                      
+
                       const realDocs = docs.filter(doc => !/^document_\d+\.txt$/.test(doc.filename));
-                      
+
                       if (realDocs.length > 0) {
                         return (
                           <div className="space-y-3">
@@ -309,7 +309,7 @@ export const BotsList: React.FC = () => {
                                     return `${kb.toFixed(0)} KB`;
                                   }
                                 };
-                                
+
                                 return (
                                   <div
                                     key={doc.id}
@@ -331,7 +331,7 @@ export const BotsList: React.FC = () => {
                           </div>
                         );
                       }
-                      
+
                       // No documents
                       return null;
                     })()}
@@ -356,11 +356,10 @@ export const BotsList: React.FC = () => {
                     <button
                       onClick={() => handleDeleteBot(bot)}
                       disabled={!!deletingBot}
-                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg ${
-                        deletingBot === bot.bot_id
+                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg ${deletingBot === bot.bot_id
                           ? "bg-red-100/80 backdrop-blur-sm border border-red-200/50 text-red-400 cursor-not-allowed"
                           : "bg-white/60 backdrop-blur-sm border border-red-300/50 hover:bg-red-50 hover:border-red-400 text-red-600 hover:scale-105 active:scale-95"
-                      }`}
+                        }`}
                     >
                       {deletingBot === bot.bot_id ? (
                         <>
@@ -435,92 +434,92 @@ export const BotsList: React.FC = () => {
           </div>
         </div>
       )}
-    {/* Delete Confirmation Modal */}
-    <Modal
-      isOpen={!!botToDelete}
-      onClose={() => setBotToDelete(null)}
-      title="Delete Bot"
-    >
-      {botToDelete && (
-        <div className="space-y-6">
-          <div>
-            <p className="text-gray-700">
-              Are you sure you want to delete the bot "<span className="font-semibold">{botToDelete.name}</span>"? This action cannot be undone.
-            </p>
-          </div>
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={() => setBotToDelete(null)}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={confirmDelete}
-              disabled={!!deletingBot}
-              className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!botToDelete}
+        onClose={() => setBotToDelete(null)}
+        title="Delete Bot"
+      >
+        {botToDelete && (
+          <div className="space-y-6">
+            <div>
+              <p className="text-gray-700">
+                Are you sure you want to delete the bot "<span className="font-semibold">{botToDelete.name}</span>"? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setBotToDelete(null)}
+                className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={!!deletingBot}
+                className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors flex items-center gap-2
                 ${deletingBot ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
-            >
-              {deletingBot ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="w-4 h-4" />
-                  Delete Bot
-                </>
-              )}
-            </button>
+              >
+                {deletingBot ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    Delete Bot
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </Modal>
+        )}
+      </Modal>
 
-    {/* Widget Embed Modal */}
-    <Modal
-      isOpen={!!widgetModalBot}
-      onClose={() => setWidgetModalBot(null)}
-      title="Embed Chatbot Widget"
-    >
-      {widgetModalBot && (
-        <div className="space-y-4">
-          <div>
-            <p className="text-neutral-700 mb-2">Copy and paste this script tag into your website's <code>&lt;body&gt;</code> to embed the chatbot widget for <b>{widgetModalBot.name}</b>:</p>
-            <pre className="bg-neutral-100 text-neutral-900 text-sm p-3 rounded border border-neutral-200 overflow-x-auto select-all">
-{`<script 
-  src="http://localhost:5173/widget/widget.js"
+      {/* Widget Embed Modal */}
+      <Modal
+        isOpen={!!widgetModalBot}
+        onClose={() => setWidgetModalBot(null)}
+        title="Embed Chatbot Widget"
+      >
+        {widgetModalBot && (
+          <div className="space-y-4">
+            <div>
+              <p className="text-neutral-700 mb-2">Copy and paste this script tag into your website's <code>&lt;body&gt;</code> to embed the chatbot widget for <b>{widgetModalBot.name}</b>:</p>
+              <pre className="bg-neutral-100 text-neutral-900 text-sm p-3 rounded border border-neutral-200 overflow-x-auto select-all">
+                {`<script 
+  src="https://main.d3q8oj3a0m1x7a.amplifyapp.com/widget/widget.js"
   data-bot-id="${widgetModalBot.bot_id}"
   data-company-name="${widgetModalBot.name}"
   data-color="#2563eb">
 </script>`}
-            </pre>
+              </pre>
+            </div>
+            <div className="text-xs text-neutral-500 space-y-2">
+              <div>
+                <b>Customization options:</b>
+                <ul className="list-disc list-inside ml-2">
+                  <li><code>data-company-name</code>: Your company name (appears in widget header)</li>
+                  <li><code>data-color</code>: Primary color for the widget (any valid CSS color)</li>
+                </ul>
+              </div>
+              <div>
+                <b>Features:</b>
+                <ul className="list-disc list-inside ml-2">
+                  <li>Dark/light mode toggle</li>
+                  <li>Resizable window (3 sizes)</li>
+                  <li>Draggable chat window</li>
+                  <li>Structured message formatting</li>
+                </ul>
+              </div>
+              <div>
+                <b>Note:</b> This widget works for local development. For production, update the <code>src</code> URL accordingly.
+              </div>
+            </div>
           </div>
-          <div className="text-xs text-neutral-500 space-y-2">
-            <div>
-              <b>Customization options:</b>
-              <ul className="list-disc list-inside ml-2">
-                <li><code>data-company-name</code>: Your company name (appears in widget header)</li>
-                <li><code>data-color</code>: Primary color for the widget (any valid CSS color)</li>
-              </ul>
-            </div>
-            <div>
-              <b>Features:</b>
-              <ul className="list-disc list-inside ml-2">
-                <li>Dark/light mode toggle</li>
-                <li>Resizable window (3 sizes)</li>
-                <li>Draggable chat window</li>
-                <li>Structured message formatting</li>
-              </ul>
-            </div>
-            <div>
-              <b>Note:</b> This widget works for local development. For production, update the <code>src</code> URL accordingly.
-            </div>
-          </div>
-        </div>
-      )}
-    </Modal>
+        )}
+      </Modal>
     </div>
   );
 };

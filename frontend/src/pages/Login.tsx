@@ -26,7 +26,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex animated-gradient">
+    <div className="min-h-screen flex bg-black">
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex-col items-center justify-center p-12 relative overflow-hidden">
         {/* Animated background elements */}
@@ -51,7 +51,7 @@ export const Login: React.FC = () => {
               </div>
               <h1 className="text-5xl font-bold text-white tracking-tight">PrayogAI</h1>
             </div>
-            <p className="text-xl text-gray-300 leading-relaxed font-light">
+            <p className="text-xl text-gray-400 leading-relaxed font-light">
               Build, deploy, and manage intelligent AI chatbots without writing a single line of code.
             </p>
           </div>
@@ -94,15 +94,15 @@ export const Login: React.FC = () => {
         </div>
 
         <div className="max-w-md w-full relative z-10">
-          <div className="glass-card p-10 fade-in-up">
+          <div className="bg-black/60 backdrop-blur-xl border border-blue-900/20 rounded-2xl p-10 fade-in-up shadow-lg shadow-blue-500/10">
             <div className="mb-10">
-              <h2 className="text-4xl font-bold gradient-text mb-3">Welcome back</h2>
-              <p className="text-gray-600 font-medium">Sign in to access your dashboard</p>
+              <h2 className="text-4xl font-bold text-white mb-3">Welcome back</h2>
+              <p className="text-gray-400 font-medium">Sign in to access your dashboard</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold mb-3 text-gray-700">
+                <label htmlFor="email" className="block text-sm font-semibold mb-3 text-gray-300">
                   Email address
                 </label>
                 <input
@@ -119,7 +119,7 @@ export const Login: React.FC = () => {
               </div>
               
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold mb-3 text-gray-700">
+                <label htmlFor="password" className="block text-sm font-semibold mb-3 text-gray-300">
                   Password
                 </label>
                 <input
@@ -136,11 +136,11 @@ export const Login: React.FC = () => {
               </div>
 
               {error && (
-                <div className="flex items-center gap-3 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-2xl shadow-lg">
-                  <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-3 p-4 bg-red-900/20 backdrop-blur-sm border border-red-800/50 rounded-2xl shadow-lg">
+                  <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm text-red-600 font-medium">{error}</span>
+                  <span className="text-sm text-red-400 font-medium">{error}</span>
                 </div>
               )}
 
@@ -164,9 +164,9 @@ export const Login: React.FC = () => {
             </form>
 
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-400">
                 Don't have an account?{' '}
-                <a href="/signup" className="font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-300">
+                <a href="/signup" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-300">
                   Sign up
                 </a>
               </p>
