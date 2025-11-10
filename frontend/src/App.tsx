@@ -26,8 +26,41 @@ const AppRoutes = () => {
   // Define which routes should show navigation
   const showNav = isAuthenticated && location.pathname !== '/login' && location.pathname !== '/signup';
 
+  // Load widget script after login
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      // Check if script already exists
+      const existingScript = document.querySelector('script[src*="widget.js"]');
+      if (existingScript) {
+        return;
+      }
+
+      // Create and append widget script
+      const script = document.createElement('script');
+      script.src = 'https://main.d3q8oj3a0m1x7a.amplifyapp.com/widget/widget.js';
+      script.setAttribute('data-bot-id', '65060ace-48e6-4868-843a-cd0177cc71f8');
+      script.setAttribute('data-company-name', 'PrayogAI');
+      script.setAttribute('data-color', '#ffffff'); // White color to match neutral theme
+      script.async = true;
+      document.body.appendChild(script);
+
+      // Cleanup function to remove script on logout
+      return () => {
+        const scriptToRemove = document.querySelector('script[src*="widget.js"]');
+        if (scriptToRemove) {
+          scriptToRemove.remove();
+        }
+        // Also remove the widget elements
+        const widgetButton = document.querySelector('div[style*="position: fixed"][style*="bottom: 24px"]');
+        const widgetChat = document.querySelector('div[style*="position: fixed"][style*="bottom: 90px"]');
+        if (widgetButton) widgetButton.remove();
+        if (widgetChat) widgetChat.remove();
+      };
+    }
+  }, [isAuthenticated]);
+
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen">
       {showNav && <Navigation />}
       <div className="max-w-[1600px] mx-auto">
         <Routes>

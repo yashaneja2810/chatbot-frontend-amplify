@@ -34,6 +34,10 @@
   };
   var currentSize = 'medium';
 
+  // Use white as default if widgetColor is the old blue
+  var buttonColor = (widgetColor === '#2563eb') ? '#ffffff' : widgetColor;
+  var iconColor = (buttonColor === '#ffffff') ? '#000000' : '#ffffff';
+  
   // Create floating button
   var btn = document.createElement('div');
   btn.style.position = 'fixed';
@@ -41,7 +45,7 @@
   btn.style.right = '24px';
   btn.style.width = '56px';
   btn.style.height = '56px';
-  btn.style.background = '#ffffff';
+  btn.style.background = buttonColor;
   btn.style.borderRadius = '50%';
   btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
   btn.style.display = 'flex';
@@ -52,7 +56,7 @@
   btn.style.transition = 'transform 0.2s';
   btn.onmouseover = function() { btn.style.transform = 'scale(1.05)'; };
   btn.onmouseout = function() { btn.style.transform = 'scale(1)'; };
-  btn.innerHTML = '<svg width="28" height="28" fill="#000" viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.58 3 11c0 1.61.62 3.09 1.69 4.34-.13.5-.5 1.84-.7 2.56-.11.36.24.68.59.57.76-.25 2.12-.7 2.62-.86C8.7 18.47 10.28 19 12 19c4.97 0 9-3.58 9-8s-4.03-8-9-8zm-2 7h4v2h-4v-2zm8 0h-2v2h2v-2zm-8 4h4v2h-4v-2zm8 0h-2v2h2v-2z"/></svg>';
+  btn.innerHTML = '<svg width="28" height="28" fill="' + iconColor + '" viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.58 3 11c0 1.61.62 3.09 1.69 4.34-.13.5-.5 1.84-.7 2.56-.11.36.24.68.59.57.76-.25 2.12-.7 2.62-.86C8.7 18.47 10.28 19 12 19c4.97 0 9-3.58 9-8s-4.03-8-9-8zm-2 7h4v2h-4v-2zm8 0h-2v2h2v-2zm-8 4h4v2h-4v-2zm8 0h-2v2h2v-2z"/></svg>';
 
   // Create chat window
   var chat = document.createElement('div');
