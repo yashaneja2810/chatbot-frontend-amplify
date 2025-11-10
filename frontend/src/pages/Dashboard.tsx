@@ -82,48 +82,48 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black py-12">
+    <div className="min-h-screen bg-black py-16">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="max-w-7xl mx-auto px-6"
+        className="max-w-[1400px] mx-auto px-8"
       >
-        {/* Header Section */}
+        {/* Header Section - Centered */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-12"
+          className="text-center mb-16"
         >
-          <h1 className="text-5xl font-bold text-white mb-3">
+          <h1 className="text-6xl font-bold text-white mb-4 tracking-tight">
             Dashboard
           </h1>
-          <p className="text-gray-400 text-lg font-medium">Monitor and manage your AI bot services</p>
+          <p className="text-gray-400 text-base font-normal max-w-2xl mx-auto">Monitor and manage your AI bot services with real-time insights</p>
         </motion.div>
 
-        {/* Stats and Info Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        {/* Stats and Info Grid - Wider spacing */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
           {/* Total Bots Card */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-black/60 backdrop-blur-xl border border-blue-900/20 rounded-2xl p-8 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-500"
+            whileHover={{ scale: 1.02, y: -8 }}
+            className="bg-gray-900/40 backdrop-blur-xl border border-blue-500/20 rounded-xl p-6 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-400/20 transition-all duration-500"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="flex items-start justify-between relative z-10">
-              <div className="flex-1">
-                <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-4">Your Bots</p>
-                <h3 className="text-6xl font-bold text-white mb-3">{stats.totalBots}</h3>
-                <p className="text-gray-400 text-sm font-medium">
-                  AI-powered chatbots deployed
-                </p>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">Your Bots</p>
               </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
-                <Bot className="w-8 h-8 text-white" />
-              </div>
+              <h3 className="text-5xl font-bold text-white mb-2">{stats.totalBots}</h3>
+              <p className="text-gray-400 text-xs font-normal">
+                AI-powered chatbots deployed
+              </p>
             </div>
           </motion.div>
 
@@ -132,23 +132,23 @@ const Dashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-black/60 backdrop-blur-xl border border-blue-900/20 rounded-2xl p-8 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-500"
+            whileHover={{ scale: 1.02, y: -8 }}
+            className="bg-gray-900/40 backdrop-blur-xl border border-blue-500/20 rounded-xl p-6 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-400/20 transition-all duration-500"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="flex items-start justify-between relative z-10">
-              <div className="flex-1">
-                <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-4">AI Technology</p>
-                <h3 className="text-3xl font-bold text-white mb-3">
-                  Google Gemini
-                </h3>
-                <p className="text-gray-400 text-sm font-medium">
-                  Advanced language model for intelligent responses
-                </p>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">AI Technology</p>
               </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Google Gemini
+              </h3>
+              <p className="text-gray-400 text-xs font-normal">
+                Advanced language model
+              </p>
             </div>
           </motion.div>
 
@@ -156,23 +156,23 @@ const Dashboard = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            className="bg-black/60 backdrop-blur-xl border border-blue-900/20 rounded-2xl p-8 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-500"
+            whileHover={{ scale: 1.02, y: -8 }}
+            className="bg-gray-900/40 backdrop-blur-xl border border-blue-500/20 rounded-xl p-6 relative overflow-hidden group shadow-lg shadow-blue-500/10 hover:shadow-blue-400/20 transition-all duration-500"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="flex items-start justify-between relative z-10">
-              <div className="flex-1">
-                <p className="text-gray-500 text-sm font-bold uppercase tracking-wider mb-4">Vector Database</p>
-                <h3 className="text-3xl font-bold text-white mb-3">
-                  AWS DynamoDB
-                </h3>
-                <p className="text-gray-400 text-sm font-medium">
-                  High-performance semantic search engine
-                </p>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <MessageSquare className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">Vector Database</p>
               </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
-                <MessageSquare className="w-8 h-8 text-white" />
-              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                AWS DynamoDB
+              </h3>
+              <p className="text-gray-400 text-xs font-normal">
+                Semantic search engine
+              </p>
             </div>
           </motion.div>
         </div>
