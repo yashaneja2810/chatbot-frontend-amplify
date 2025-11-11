@@ -120,71 +120,62 @@ export const SignUp: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex animated-gradient">
+        <div className="min-h-screen flex">
             {/* Left Side - Branding */}
-            <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex-col items-center justify-center p-12 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl float-animation"></div>
-                    <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full blur-3xl float-animation" style={{ animationDelay: '2s' }}></div>
-                </div>
-
-                <div className="absolute inset-0 opacity-5" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)',
+            <div className="hidden lg:flex lg:w-1/2 bg-[#1a1a1a] flex-col items-center justify-center p-12 relative overflow-hidden">
+                {/* Subtle grid pattern */}
+                <div className="absolute inset-0 opacity-[0.03]" style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
                     backgroundSize: '50px 50px'
                 }}></div>
 
-                <div className="max-w-lg relative z-10 fade-in-up">
-                    <div className="mb-12">
-                        <div className="inline-flex items-center gap-3 mb-8">
-                            <div className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
-                                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <div className="max-w-lg relative z-10">
+                    <div className="mb-16">
+                        <div className="inline-flex items-center gap-4 mb-8">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl">
+                                <svg className="w-9 h-9 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
                             <h1 className="text-5xl font-bold text-white tracking-tight">PrayogAI</h1>
                         </div>
-                        <p className="text-xl text-gray-300 leading-relaxed font-light">
+                        <p className="text-lg text-gray-400 leading-relaxed">
                             Join thousands of businesses using AI to transform their customer support experience.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6 mt-20">
-                        <div className="text-center group">
-                            <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                    <div className="grid grid-cols-3 gap-8">
+                        <div className="text-center">
+                            <div className="w-20 h-20 bg-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-800 shadow-lg hover:bg-[#333333] transition-colors duration-300">
                                 <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </div>
-                            <div className="text-sm text-gray-200 font-semibold">Secure</div>
+                            <div className="text-sm text-gray-300 font-medium">Secure</div>
                         </div>
-                        <div className="text-center group">
-                            <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500" style={{ transitionDelay: '100ms' }}>
+                        <div className="text-center">
+                            <div className="w-20 h-20 bg-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-800 shadow-lg hover:bg-[#333333] transition-colors duration-300">
                                 <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
-                            <div className="text-sm text-gray-200 font-semibold">Fast Setup</div>
+                            <div className="text-sm text-gray-300 font-medium">Fast Setup</div>
                         </div>
-                        <div className="text-center group">
-                            <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500" style={{ transitionDelay: '200ms' }}>
+                        <div className="text-center">
+                            <div className="w-20 h-20 bg-[#2a2a2a] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-800 shadow-lg hover:bg-[#333333] transition-colors duration-300">
                                 <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                                 </svg>
                             </div>
-                            <div className="text-sm text-gray-200 font-semibold">Easy to Use</div>
+                            <div className="text-sm text-gray-300 font-medium">Easy to Use</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Right Side - Forms */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl float-animation"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/30 rounded-full blur-3xl float-animation" style={{ animationDelay: '3s' }}></div>
-                </div>
-
-                <div className="max-w-md w-full relative z-10">
+            {/* Right Side - Forms (White Background) */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+                <div className="max-w-md w-full">
                     <AnimatePresence mode="wait">
                         {showVerificationMessage ? (
                             <motion.div
@@ -192,7 +183,7 @@ export const SignUp: React.FC = () => {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="glass-card p-12 text-center"
+                                className="bg-white p-12 text-center rounded-2xl shadow-lg border border-gray-100"
                             >
                                 <motion.div
                                     initial={{ scale: 0 }}
@@ -261,11 +252,11 @@ export const SignUp: React.FC = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="glass-card p-10 fade-in-up"
+                                className="bg-white p-10 rounded-2xl shadow-lg border border-gray-100"
                             >
                                 <div className="mb-10">
-                                    <h2 className="text-4xl font-bold gradient-text mb-3">Verify Your Email</h2>
-                                    <p className="text-gray-600 font-medium">
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Verify Your Email</h2>
+                                    <p className="text-gray-600 text-sm">
                                         We've sent a 6-digit code to <span className="font-bold text-gray-900">{email}</span>
                                     </p>
                                 </div>
@@ -281,7 +272,7 @@ export const SignUp: React.FC = () => {
                                             type="text"
                                             required
                                             maxLength={6}
-                                            className="input-field text-center text-2xl tracking-widest font-bold"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 text-center text-2xl tracking-widest font-bold"
                                             placeholder="000000"
                                             value={otp}
                                             onChange={(e) => {
@@ -314,7 +305,7 @@ export const SignUp: React.FC = () => {
                                     <button
                                         type="submit"
                                         disabled={isVerifying || otp.length !== 6}
-                                        className="btn-primary w-full"
+                                        className="w-full px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                     >
                                         {isVerifying ? (
                                             <>
@@ -363,11 +354,11 @@ export const SignUp: React.FC = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="glass-card p-10 fade-in-up"
+                                className="bg-white p-10 rounded-2xl shadow-lg border border-gray-100"
                             >
-                                <div className="mb-10">
-                                    <h2 className="text-4xl font-bold gradient-text mb-3">Create Account</h2>
-                                    <p className="text-gray-600 font-medium">Start building your AI chatbot today</p>
+                                <div className="mb-8">
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
+                                    <p className="text-gray-600 text-sm">Start building your AI chatbot today</p>
                                 </div>
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -383,7 +374,7 @@ export const SignUp: React.FC = () => {
                                                 type="email"
                                                 required
                                                 autoComplete="email"
-                                                className="input-field pl-12"
+                                                className="w-full px-4 py-3 pl-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 placeholder-gray-400"
                                                 placeholder="you@company.com"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
@@ -403,7 +394,7 @@ export const SignUp: React.FC = () => {
                                                 type={showPassword ? 'text' : 'password'}
                                                 required
                                                 autoComplete="new-password"
-                                                className="input-field pl-12 pr-12"
+                                                className="w-full px-4 py-3 pl-12 pr-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 placeholder-gray-400"
                                                 placeholder="••••••••"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
@@ -435,7 +426,7 @@ export const SignUp: React.FC = () => {
                                                 type={showConfirmPassword ? 'text' : 'password'}
                                                 required
                                                 autoComplete="new-password"
-                                                className="input-field pl-12 pr-12"
+                                                className="w-full px-4 py-3 pl-12 pr-12 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 placeholder-gray-400"
                                                 placeholder="••••••••"
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -470,7 +461,7 @@ export const SignUp: React.FC = () => {
                                     <button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="btn-primary w-full"
+                                        className="w-full px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                     >
                                         {isLoading ? (
                                             <>
